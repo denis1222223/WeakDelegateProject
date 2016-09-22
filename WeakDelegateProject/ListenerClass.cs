@@ -8,5 +8,9 @@ namespace WeakDelegateProject
 {
     class ListenerClass
     {
+        public void Handler(int a)
+        {
+            Console.WriteLine(a);
+        }
     }
 }

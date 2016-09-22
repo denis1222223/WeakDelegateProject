@@ -8,35 +8,15 @@ namespace WeakDelegateProject
 {
     class Program
     {
-        delegate void MyDelegate(ref int a);
-        static event MyDelegate myEvent;
-
-        static void Incr(ref int a)
-        {
-            a++;
-        }
-        static void Incr2(ref int a)
-        {
-            a++;
-        }
-        static void Incr3(ref int a)
-        {
-            a++;
-        }
-
         static void Main(string[] args)
         {
-            MyDelegate del = new MyDelegate(Incr);
+            SourceClass source = new SourceClass();
+            ListenerClass listener = new ListenerClass();
 
-            Console.WriteLine(myEvent.Target.ToString());
+            source.Completed += (Action<int, int>)new WeakDelegate((Action<int>)listener.Handler).Weak;
 
-            int f = 4;
-            myEvent(ref f);
-
-            Console.WriteLine(f);
-
+            source.TikTak(1000);
             Console.ReadLine();
         }
-
     }
 }
