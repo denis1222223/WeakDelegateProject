@@ -9,24 +9,10 @@ namespace WeakDelegateProject
 {
     class WeakDelegate
     {
-
         public WeakReference weakReference;
         private MethodInfo targetMethodInfo;
         private Type eventHandlerDelegateType;
         private Delegate del;
-
-        public WeakDelegate(Delegate method)
-        {
-            eventHandlerDelegateType = method.GetType();
-            targetMethodInfo = method.Method;
-            weakReference = new WeakReference(method.Target);
-            gen();
-        }
-
-        private void gen()
-        {
-
-        }
 
         public Delegate Weak
         {
@@ -36,9 +22,19 @@ namespace WeakDelegateProject
             }
         }
 
-        //public void Weakg(int a)
-        //{
-        //    Method(a);
-        //}
+        public WeakDelegate(Delegate method)
+        {
+            weakReference = new WeakReference(method.Target);
+            eventHandlerDelegateType = method.GetType();
+            targetMethodInfo = method.Method; 
+                     
+            GenerateDelegate();
+        }
+
+        private void GenerateDelegate()
+        {
+            DelegateFactory delegateFactory = new DelegateFactory(weakReference, targetMethodInfo);
+            del = delegateFactory.GetDelegate();
+        }     
     }
 }

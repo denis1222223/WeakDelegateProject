@@ -9,12 +9,15 @@ namespace WeakDelegateProject
 {
     class SourceClass
     {
-        public event Action<int, int> Completed;
+        public event Action<int> Completed;
+        public event Action<int, double> Completed1;
+        public event Action<int, double, int> Completed2;
 
-        public void TikTak(int ms)
+        public void CallEvent()
         {
-            Thread.Sleep(ms);
-            Completed(ms);
+            Completed?.Invoke(1);
+            Completed1?.Invoke(1,2);
+            Completed2?.Invoke(1,2,3);
         }
     }
 }

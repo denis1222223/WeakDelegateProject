@@ -12,5 +12,15 @@ namespace WeakDelegateProject
         {
             Console.WriteLine(a);
         }
+
+        public void Handler(int a, double b)
+        {
+            Console.WriteLine(a + " " + b);
+        }
+
+        public void Handler(int a, double b, int c)
+        {
+            Console.WriteLine(a + " " + b + " " + c);
+        }
     }
 }
