@@ -7,11 +7,10 @@ using System.Reflection;
 
 namespace WeakDelegateProject
 {
-    class WeakDelegate
+    public class WeakDelegate
     {
-        public WeakReference weakReference;
+        private WeakReference weakReference;
         private MethodInfo targetMethodInfo;
-        private Type eventHandlerDelegateType;
         private Delegate del;
 
         public Delegate Weak
@@ -25,9 +24,7 @@ namespace WeakDelegateProject
         public WeakDelegate(Delegate method)
         {
             weakReference = new WeakReference(method.Target);
-            eventHandlerDelegateType = method.GetType();
-            targetMethodInfo = method.Method; 
-                     
+            targetMethodInfo = method.Method;
             GenerateDelegate();
         }
 
@@ -36,5 +33,10 @@ namespace WeakDelegateProject
             DelegateFactory delegateFactory = new DelegateFactory(weakReference, targetMethodInfo);
             del = delegateFactory.GetDelegate();
         }     
+
+        public bool IsAlive()
+        {
+            return weakReference.IsAlive;
+        }
     }
 }

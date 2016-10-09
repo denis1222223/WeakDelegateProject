@@ -25,7 +25,8 @@ namespace WeakDelegateProject
 
         private Type GetDelegateType()
         {
-            return Expression.GetDelegateType(targetMethodInfo.GetParameters().Select(parameter => parameter.ParameterType).Concat(new[] { targetMethodInfo.ReturnType }).ToArray());
+            return Expression.GetDelegateType(targetMethodInfo.GetParameters().Select(parameter =>
+                parameter.ParameterType).Concat(new[] { targetMethodInfo.ReturnType }).ToArray());
         }
 
         private ConditionalExpression GetBlockCall(ParameterExpression[] argumentsType, Expression[] callbackTarget)
@@ -38,15 +39,12 @@ namespace WeakDelegateProject
             return new Expression[] { CallDelegate(argumentsType) };
         }
 
-        private Expression[] CallFunc(ParameterExpression[] argumentsType, ParameterExpression returnVariable)
-        {
-            return new Expression[] { Expression.Assign(returnVariable, CallDelegate(argumentsType)) };
-        }
-
         private MethodCallExpression CallDelegate(ParameterExpression[] argumentsType)
         {
-            return Expression.Call(instance: Expression.Convert(GetTarget(),
-                targetMethodInfo.DeclaringType), method: targetMethodInfo, arguments: argumentsType);
+            return Expression.Call(
+                instance: Expression.Convert(GetTarget(), targetMethodInfo.DeclaringType), 
+                method: targetMethodInfo, 
+                arguments: argumentsType);
         }
 
         private List<ParameterExpression> GetVariables(ParameterExpression[] argumentsType)
