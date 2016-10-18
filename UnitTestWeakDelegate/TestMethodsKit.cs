@@ -21,12 +21,7 @@ namespace UnitTestWeakDelegate
             resultIntValue = x * y * z;
         }
 
-        public string makeString(string firstStr, int number, string secondString)
-        {
-            return firstStr + number.ToString() + secondString;
-        }
-
-        public void NullFunc()
+        public void EmptyFunction()
         {
             
         }

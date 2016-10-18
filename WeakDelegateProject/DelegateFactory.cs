@@ -19,8 +19,8 @@ namespace WeakDelegateProject
 
         public Delegate GetDelegate()
         {
-            var argumentsType = GetArgumentsType();
-            return Expression.Lambda(GetDelegateType(), GetBlockCall(argumentsType, CallAction(argumentsType)), argumentsType).Compile();
+            var parametersType = GetParametersType();
+            return Expression.Lambda(GetDelegateType(), GetBlockCall(parametersType, CallAction(parametersType)), parametersType).Compile();
         }
 
         private Type GetDelegateType()
@@ -29,14 +29,14 @@ namespace WeakDelegateProject
                 parameter.ParameterType).Concat(new[] { targetMethodInfo.ReturnType }).ToArray());
         }
 
-        private ConditionalExpression GetBlockCall(ParameterExpression[] argumentsType, Expression[] callbackTarget)
+        private ConditionalExpression GetBlockCall(ParameterExpression[] parametersType, Expression[] callbackTarget)
         {
-            return Expression.IfThen(Expression.IsTrue(GetCheckIsALive()), Expression.Block(GetVariables(argumentsType), callbackTarget));
+            return Expression.IfThen(Expression.IsTrue(GetCheckIsALive()), Expression.Block(GetVariables(parametersType), callbackTarget));
         }
 
-        private Expression[] CallAction(ParameterExpression[] argumentsType)
+        private Expression[] CallAction(ParameterExpression[] parametersType)
         {
-            return new Expression[] { CallDelegate(argumentsType) };
+            return new Expression[] { CallDelegate(parametersType) };
         }
 
         private MethodCallExpression CallDelegate(ParameterExpression[] argumentsType)
@@ -62,77 +62,9 @@ namespace WeakDelegateProject
             return Expression.Property(Expression.Convert(Expression.Constant(weakReference), typeof(WeakReference)), "IsAlive");
         }
 
-        private ParameterExpression[] GetArgumentsType()
+        private ParameterExpression[] GetParametersType()
         {
             return targetMethodInfo.GetParameters().Select(parameter => Expression.Parameter(parameter.ParameterType)).ToArray();
         }
     }
-
-
-
-
-
-
-
-
-
-    /*
-    public class DelegateFactory
-    {
-        private MethodInfo targetMethodInfo;
-        private WeakReference weakReference;
-
-        public DelegateFactory(WeakReference weakReference, MethodInfo targetMethodInfo)
-        {
-            this.weakReference = weakReference;
-            this.targetMethodInfo = targetMethodInfo;
-        }
-
-        public Delegate GetDelegate()
-        {
-            ParameterExpression[] eventHandlerParametersExpression = GenerateParametersExpression(targetMethodInfo);
-
-            Expression weakReferenceExpression = Expression.Constant(weakReference);
-            Type eventHandlerDelegateType = weakReference.Target.GetType();
-            Expression targetObjectExpression = GetPropertyExpression(weakReferenceExpression, "Target", eventHandlerDelegateType);
-
-            Expression targetMethodInvoke = Expression.Call(targetObjectExpression, targetMethodInfo, eventHandlerParametersExpression);
-
-            Expression nullExpression = Expression.Constant(null);
-            Expression conditionExpression = Expression.NotEqual(targetObjectExpression, nullExpression);
-            Expression ifExpression = Expression.IfThen(conditionExpression, targetMethodInvoke);
-
-            LambdaExpression labmda = Expression.Lambda(ifExpression, eventHandlerParametersExpression);
-            return labmda.Compile();
-        }
-
-        private ParameterExpression[] GenerateParametersExpression(MethodInfo method)
-        {
-            ParameterInfo[] eventHandlerParametersInfo = method.GetParameters();
-            ParameterExpression[] eventHandlerParametersExpression =
-                new ParameterExpression[eventHandlerParametersInfo.Length];
-            int i = 0;
-            foreach (ParameterInfo parameter in eventHandlerParametersInfo)
-            {
-                eventHandlerParametersExpression[i] = Expression.Parameter(parameter.ParameterType);
-                i++;
-            }
-            return eventHandlerParametersExpression;
-        }
-
-        private Expression GetPropertyExpression(Expression objectExpression, String propertyName,
-            Type typeToCastProperty = null)
-        {
-            Type classType = objectExpression.Type;
-            PropertyInfo targetPropertyInfo = classType.GetProperty(propertyName);
-            Expression targetObjectExpression = Expression.Property(objectExpression, targetPropertyInfo);
-            if (typeToCastProperty != null)
-            {
-                targetObjectExpression = Expression.Convert(targetObjectExpression, typeToCastProperty);
-            }
-            return targetObjectExpression;
-        }
-
-    }
-    */
 }
